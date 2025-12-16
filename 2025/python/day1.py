@@ -68,7 +68,72 @@ class Dial():
                 self.number = number
 
         print(f"The password is: {num_of_zero}")
+
         return
+
+    ## === Part 2 === ###
+    PASSWORD_METHOD = 0x434C943B
+
+    def rotate2(self, rotation):
+        assert isinstance(rotation, str)
+        assert len(rotation) >= 2         # min rotaion is direction + distance 
+        
+        direction = rotation[0]
+        try: 
+            distance = int(rotation[1:])
+        except ValueError:
+            print(f"{rotation[1:]} is not integer")
+            return None, None
+    
+        zero_count = 0
+        match direction:
+            case 'L':
+                diff = self.number - distance
+                number = diff % 100
+                zero_count = abs(diff) // 100
+                if self.number == 0: zero_count -= 1 
+
+                if diff <= 0: zero_count += 1
+
+                
+            case 'R':
+                sum = self.number + distance
+                number = sum % 100
+                zero_count = sum // 100
+
+                if sum == 0: zero_count += 1
+                
+            case '_':
+                print(f"{direction} is invalid direction")
+                return None, None
+
+        
+        print(f"\t- The dial is rotated {rotation[:-1]} to point at {number}.")
+        if zero_count != 0:
+            print(f"\t\tduring this rotation, it points at 0 {zero_count} times")
+        return number, zero_count
+
+        
+## count how many zero passed 
+
+    def get_passward2(self, document_path):
+        num_of_zero = 0
+        
+        with open(document_path, 'r') as f:
+            for rotation in f.readlines():
+                if len(rotation) == 0: continue
+
+                number, zero_count = self.rotate2(rotation)
+                if number is None:
+                    print("Error.")
+                    return
+                
+                self.number = number
+                num_of_zero += zero_count
+
+        print(f"The password is: {num_of_zero}")
+        return
+
 
 
 if __name__ == "__main__":
@@ -76,5 +141,7 @@ if __name__ == "__main__":
 
     dial = Dial()
     dial.get_passward(document_path)
-
+    
+    dial = Dial()
+    dial.get_passward2(document_path)
 
