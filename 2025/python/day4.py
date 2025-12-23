@@ -20,8 +20,10 @@ def part1(puzzle_input):
             else:
                 grid_out[y][x] = grid[y][x]
 
-    print("\n".join(["".join(row) for row in grid]))
+    print("\n".join(["".join(row) for row in grid_out]))
     print(count)
+
+    return grid_out, count
 
 
 def can_access(grid, pos) -> bool:
@@ -67,7 +69,14 @@ def is_paper_roll(grid, pos: tuple) -> bool:
     return grid[y][x] == '@'
 
 def part2(puzzle_input):
-    pass
+    total_count = 0
+    while True:
+        grid_out, count = part1(puzzle_input)
+        if count == 0:
+            break
+        total_count += count 
+        puzzle_input = "\n".join(["".join(row) for row in grid_out])
+    print(total_count)
 
 if __name__ == "__main__":
     example_input = """
@@ -83,10 +92,12 @@ if __name__ == "__main__":
 @.@.@@@.@.
 """
     part1(example_input)
+    part2(example_input)
 
     day4_input = ""
     with open("../inputs/day4.txt", 'r') as f:
        day4_input = "".join(f.readlines())
 
-    part1(day4_input)
+    # part1(day4_input)
+    part2(day4_input)
 
